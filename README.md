@@ -1,88 +1,119 @@
-# 🎯 Reconnaissance faciale – Projet IRIS
+# 🧠 Projet IRIS – Reconnaissance Faciale avec OpenCV
 
-Ce module permet de capturer des visages via une caméra et d’entraîner un modèle de reconnaissance faciale.
+## 📌 Description
 
----
+Ce projet permet de réaliser un système de reconnaissance faciale en plusieurs étapes :
 
-## 📦 Installation
-
-Installer les dépendances nécessaires :
-
-```bash
-pip install opencv-python opencv-contrib-python numpy
-```
+- 📸 Capture d’images de visages via webcam
+- 🗂️ Création d’un dataset par utilisateur
+- 🏋️ Entraînement d’un modèle LBPH (OpenCV)
+- 🎥 Reconnaissance faciale en temps réel
 
 ---
 
-## 📷 Source vidéo
+## 🚀 Installation
 
-* Actuellement : webcam du PC (`index 0`)
-* À terme : migration vers **Picamera2** pour Raspberry Pi
-
----
-
-## 🚀 Utilisation
-
-### 1. Capture des visages
-
-Lancer le script :
-
-```bash
-python Enregistrement_visage.py
-```
-
-👉 Ce script :
-
-* capture environ **30 images** du visage
-* enregistre les données pour l’entraînement
-
-💡 **Conseil :**
-Augmenter le nombre de photos améliore la précision du modèle.
+### 1. Cloner le projet
+git clone https://github.com/GabrielC-star/Module-camera-Iris.git
+cd Module_camera
 
 ---
 
-### 2. Entraînement du modèle
-
-Après la capture des images, lancer le script d’entraînement.
-
----
-
-## 🧠 Reconnaissance faciale
-
-Le système utilise un seuil de confiance pour déterminer si un visage est reconnu.
-
-```python
-SEUIL_CONFIANCE = 80
-```
-
-### Interprétation :
-
-* **Confiance < seuil** → visage reconnu ✅
-* **Confiance > seuil** → visage inconnu ❌
+### 2. Créer un environnement virtuel
+python -m venv venv
 
 ---
 
-## ⚙️ Améliorations possibles
+### 3. Activer le venv
 
-* Augmenter le nombre d’images d’entraînement
-* Améliorer les conditions de capture (lumière, angles)
-* Implémenter Picamera2 pour Raspberry Pi
-* Ajouter une interface utilisateur
+Git Bash :
+source venv/Scripts/activate
 
 ---
 
-## 📁 Structure du projet (exemple)
+### 4. Installer les dépendances
+pip install -r requirements.txt
 
-```
-.
-├── Enregistrement_visage.py
-├── dataset/
-├── Entrainement&reconnaissance.py/
+---
+
+## 📸 Étape 1 – Capture des visages
+
+python Enregistrement_visage.py  -> pas à lancer si vous avez déja un dataset de photo
+
+- La webcam s’ouvre
+- Appuie sur ESPACE pour capturer une image
+- Les images sont enregistrées dans data/NOM_UTILISATEUR/
+
+---
+
+## 🏋️ Étape 2 – Entraînement du modèle
+
+python Entrainement_reconnaissance.py
+
+- Charge les images du dataset
+- Entraîne un modèle LBPH
+- Génère trainer.yml
+
+⚠️ Installer obligatoire :
+pip install opencv-contrib-python
+
+---
+
+## 🎥 Étape 3 – Reconnaissance en temps réel
+
+python reconnaissance.py
+
+- Ouvre la webcam
+- Détecte les visages
+- Affiche le nom reconnu en direct
+
+---
+
+## 📁 Structure du projet
+
+Module_camera/
+│
+├── venv/                              # Environnement virtuel (non versionné)
+├── data/                              # Dataset des visages
+│   ├── Gabriel/
+│   ├── Autres_utilisateurs/
+│
+├── Enregistrement_visage.py          # Capture des images webcam
+├── Entrainement_reconnaissance.py    # Entraînement du modèle LBPH
+├── reconnaissance.py                 # Reconnaissance en temps réel
+│
+├── trainer.yml                      # Modèle entraîné (généré)
+├── requirements.txt
 └── README.md
-```
 
 ---
 
-## 🎓 Contexte
+## ⚙️ Technologies utilisées
 
-Projet réalisé dans le cadre du projet **IRIS** – robot autonome pour campus étudiant.
+- Python 3.10+
+- OpenCV (opencv-contrib-python obligatoire)
+- NumPy
+
+---
+
+## 🚫 Bonnes pratiques
+
+- Ne jamais versionner venv/
+- Toujours activer le venv avant d’exécuter
+- Utiliser un seul environnement Python
+- Utiliser requirements.txt pour partager les dépendances
+
+---
+
+## 🧠 Principe du projet
+
+1. Capture d’images
+2. Prétraitement
+3. Entraînement LBPH
+4. Reconnaissance en temps réel
+
+---
+
+## 👤 Auteur
+
+Projet étudiant – EPF
