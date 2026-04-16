@@ -43,7 +43,7 @@ Augmenter le nombre de photos améliore la précision du modèle.
 
 ### 2. Entraînement du modèle
 
-Après la capture des images, lancer le script d’entraînement (à adapter selon ton projet).
+Après la capture des images, lancer le script d’entraînement.
 
 ---
 
@@ -77,7 +77,7 @@ SEUIL_CONFIANCE = 80
 .
 ├── Enregistrement_visage.py
 ├── dataset/
-├── trainer/
+├── Entrainement&reconnaissance.py/
 └── README.md
 ```
 
