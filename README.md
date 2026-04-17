@@ -1,119 +1,174 @@
-# 🧠 Projet IRIS – Reconnaissance Faciale avec OpenCV
+# 📷 Module Caméra — IRIS
 
-## 📌 Description
+> Intelligent Robot for Interactive Services — EPF Engineering School
 
-Ce projet permet de réaliser un système de reconnaissance faciale en plusieurs étapes :
-
-- 📸 Capture d’images de visages via webcam
-- 🗂️ Création d’un dataset par utilisateur
-- 🏋️ Entraînement d’un modèle LBPH (OpenCV)
-- 🎥 Reconnaissance faciale en temps réel
-
----
-
-## 🚀 Installation
-
-### 1. Cloner le projet
-git clone https://github.com/GabrielC-star/Module-camera-Iris.git
-cd Module_camera
-
----
-
-### 2. Créer un environnement virtuel
-python -m venv venv
-
----
-
-### 3. Activer le venv
-
-Git Bash :
-source venv/Scripts/activate
-
----
-
-### 4. Installer les dépendances
-pip install -r requirements.txt
-
----
-
-## 📸 Étape 1 – Capture des visages
-
-python Enregistrement_visage.py  -> pas à lancer si vous avez déja un dataset de photo
-
-- La webcam s’ouvre
-- Appuie sur ESPACE pour capturer une image
-- Les images sont enregistrées dans data/NOM_UTILISATEUR/
-
----
-
-## 🏋️ Étape 2 – Entraînement du modèle
-
-python Entrainement_reconnaissance.py
-
-- Charge les images du dataset
-- Entraîne un modèle LBPH
-- Génère trainer.yml
-
-⚠️ Installer obligatoire :
-pip install opencv-contrib-python
-
----
-
-## 🎥 Étape 3 – Reconnaissance en temps réel
-
-python reconnaissance.py
-
-- Ouvre la webcam
-- Détecte les visages
-- Affiche le nom reconnu en direct
+Module de reconnaissance faciale et détection de numéros de salle en temps réel, développé pour le robot IRIS.
 
 ---
 
 ## 📁 Structure du projet
 
+```
 Module_camera/
-│
-├── venv/                              # Environnement virtuel (non versionné)
-├── data/                              # Dataset des visages
-│   ├── Gabriel/
-│   ├── Autres_utilisateurs/
-│
-├── Enregistrement_visage.py          # Capture des images webcam
-├── Entrainement_reconnaissance.py    # Entraînement du modèle LBPH
-├── reconnaissance.py                 # Reconnaissance en temps réel
-│
-├── trainer.yml                      # Modèle entraîné (généré)
-├── requirements.txt
-└── README.md
+├── main.py                     # Point d'entrée
+├── config.py                   # Paramètres globaux
+├── dataset.py                  # Chargement des images et entraînement
+├── detection_salle.py          # Détection OCR des numéros de salle
+├── reconnaissance_faciale.py   # Boucle caméra et reconnaissance
+├── capture_visage.py           # Script de capture des photos
+└── dataset/                    # Dossier des photos (créé automatiquement)
+    └── [Nom]/
+        ├── 0.jpg
+        ├── 1.jpg
+        └── ...
+```
 
 ---
 
-## ⚙️ Technologies utilisées
+## ⚙️ Prérequis
 
-- Python 3.10+
-- OpenCV (opencv-contrib-python obligatoire)
-- NumPy
+### Python
+- Python 3.8 ou supérieur
 
----
+### Tesseract OCR
 
-## 🚫 Bonnes pratiques
+**Windows :**
+1. Télécharger l'installeur : https://github.com/UB-Mannheim/tesseract/wiki
+2. Choisir `tesseract-ocr-w64-setup-5.x.x.exe` (64 bits)
+3. Installer (chemin par défaut : `C:\Program Files\Tesseract-OCR`)
 
-- Ne jamais versionner venv/
-- Toujours activer le venv avant d’exécuter
-- Utiliser un seul environnement Python
-- Utiliser requirements.txt pour partager les dépendances
-
----
-
-## 🧠 Principe du projet
-
-1. Capture d’images
-2. Prétraitement
-3. Entraînement LBPH
-4. Reconnaissance en temps réel
+**Linux / Raspberry Pi :**
+```bash
+sudo apt install tesseract-ocr
+```
 
 ---
 
-## 👤 Auteur
+## 📦 Installation des dépendances Python
 
-Projet étudiant – EPF
+```bash
+# Créer un environnement virtuel (recommandé)
+python -m venv venv
+
+# Activer l'environnement virtuel
+# Windows :
+venv\Scripts\activate
+# Linux / Mac :
+source venv/bin/activate
+
+# Installer les dépendances
+pip install -r requirements.txt
+```
+
+---
+
+## 🚀 Lancement
+
+### Étape 1 — Capturer les photos d'un utilisateur
+
+```bash
+python enregistrement_visage.py
+```
+
+- Une fenêtre s'ouvre avec le flux de la caméra
+- Placer le visage dans le rectangle vert
+- Appuyer sur **ESPACE** pour prendre une photo
+- Répéter **30 fois** en variant légèrement les angles
+- Appuyer sur **Q** pour quitter
+
+> Les photos sont sauvegardées automatiquement dans `dataset/[Nom]/`
+
+### Étape 2 — Lancer la reconnaissance
+
+```bash
+python main.py
+```
+
+Cela va :
+1. Entraîner le modèle sur les photos capturées
+2. Sauvegarder le modèle dans `modele_iris.yml`
+3. Lancer la reconnaissance faciale et la détection de salle en temps réel
+
+---
+
+## 🎮 Contrôles
+
+| Touche | Action |
+|--------|--------|
+| `Q` | Quitter le programme |
+| `ESPACE` | Prendre une photo (mode capture uniquement) |
+
+---
+
+## 🖥️ Affichage
+
+| Couleur | Signification |
+|---------|---------------|
+| 🟢 Vert | Visage reconnu |
+| 🔴 Rouge | Visage inconnu |
+| 🟠 Orange | Numéro de salle détecté |
+
+---
+
+## 🔧 Configuration
+
+Tous les paramètres sont centralisés dans `config.py` :
+
+```python
+# Chemin vers Tesseract (Windows uniquement)
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+# Seuil de confiance pour la reconnaissance faciale
+# Plus il est bas = plus strict / Plus il est haut = plus permissif
+SEUIL_CONFIANCE = 80
+
+# Fréquence d'analyse OCR (toutes les N frames)
+ANALYSER_TOUTES_LES_N_FRAMES = 15
+```
+
+---
+
+## 📸 Format des numéros de salle
+
+Le module détecte les numéros au format **une lettre + 3 chiffres** :
+
+```
+✅ P902   ✅ C106   ✅ B207
+❌ 902    ❌ PP902  ❌ P90
+```
+
+Pour de meilleurs résultats avec l'OCR :
+- Texte imprimé, police claire, taille minimum 2-3 cm
+- Fond blanc, texte noir (contraste maximal)
+- Caméra à 20-40 cm du texte
+- Bonne luminosité, sans reflets
+
+---
+
+## 🐛 Problèmes courants
+
+| Erreur | Cause | Solution |
+|--------|-------|----------|
+| `TesseractNotFoundError` | Tesseract non trouvé | Vérifier le chemin dans `config.py` |
+| `cv2.face` introuvable | Mauvais package OpenCV | Installer `opencv-contrib-python` |
+| Visage toujours "Inconnu" | Seuil trop bas | Augmenter `SEUIL_CONFIANCE` à 90 dans `config.py` |
+| Aucune photo capturée | Visage non détecté | Améliorer l'éclairage |
+| Salle jamais détectée | Texte trop petit/flou | Rapprocher la caméra du texte |
+
+---
+
+## 📋 Dépendances
+
+| Bibliothèque | Version | Usage |
+|---|---|---|
+| `opencv-python` | ≥ 4.5 | Flux vidéo et détection de visages |
+| `opencv-contrib-python` | ≥ 4.5 | Modèle LBPH (reconnaissance faciale) |
+| `numpy` | ≥ 1.21 | Traitement des arrays d'images |
+| `pytesseract` | ≥ 0.3 | Interface Python pour Tesseract OCR |
+| `Tesseract OCR` | ≥ 5.0 | Moteur OCR pour la détection de salle |
+
+---
+
+## 👥 Équipe
+
+Projet réalisé à l'**EPF École d'Ingénieurs** dans le cadre du projet IRIS.
