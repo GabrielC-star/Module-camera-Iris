@@ -1,2 +1,5 @@
 numpy==2.4.4
 opencv-contrib-python==4.13.0.92
+packaging==26.1
+pillow==12.2.0
+pytesseract==0.3.13
