@@ -4,7 +4,7 @@ import pytesseract
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # --- Reconnaissance faciale ---
-SEUIL_CONFIANCE = 80
+SEUIL_CONFIANCE = 100
 TAILLE_VISAGE = (100, 100)
 TAILLE_MIN_VISAGE = (80, 80)
 
