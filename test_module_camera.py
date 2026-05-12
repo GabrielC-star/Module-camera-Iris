@@ -20,7 +20,7 @@ try:
         )
 
         for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x + w // 2, y + h // 2), max(w, h) // 2, (255, 0, 0), 2)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
             cv2.putText(frame, "Visage detecte", (x, y - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
 
