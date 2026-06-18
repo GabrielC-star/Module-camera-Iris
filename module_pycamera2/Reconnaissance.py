@@ -1,7 +1,9 @@
 import cv2
+import numpy as np
 from picamera2 import Picamera2
-from config import SEUIL_CONFIANCE, TAILLE_VISAGE, TAILLE_MIN_VISAGE, FICHIER_MODELE
-from dataset import charger_dataset
+from module_camera_PC.config import SEUIL_CONFIANCE, TAILLE_VISAGE, TAILLE_MIN_VISAGE, FICHIER_MODELE
+from module_camera_PC.dataset import charger_dataset
+from module_camera_PC.detection_salle import detecter_salle, afficher_salle, ANALYSER_TOUTES_LES_N_FRAMES
 
 
 def reconnaitre_visages():
@@ -15,12 +17,14 @@ def reconnaitre_visages():
 
     # --- Initialisation Picamera2 ---
     picam2 = Picamera2()
-    config_cam = picam2.create_preview_configuration(
+    config = picam2.create_preview_configuration(
         main={"format": "RGB888", "size": (640, 360)},
         controls={"FrameDurationLimits": (33333, 33333)}  # ~30fps
     )
-    picam2.configure(config_cam)
+    picam2.configure(config)
     picam2.start()
+
+    compteur_frames = 0
 
     print("Reconnaissance en cours — Appuie sur 'q' pour quitter")
 
@@ -53,7 +57,16 @@ def reconnaitre_visages():
                 cv2.putText(frame, texte, (x, y - 10),
                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, couleur, 2)
 
-            cv2.imshow("Reconnaissance faciale", frame)
+            # --- Détection de salle toutes les N frames ---
+            if compteur_frames % ANALYSER_TOUTES_LES_N_FRAMES == 0:
+                detecter_salle(frame)
+
+            compteur_frames += 1
+
+            # --- Affichage de la salle ---
+            afficher_salle(frame)
+
+            cv2.imshow("IRIS - Reconnaissance", frame)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
